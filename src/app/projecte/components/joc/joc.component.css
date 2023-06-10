@@ -1,0 +1,22 @@
+.general{
+    display: flex;
+    flex-direction: row;
+    background-color: blue;
+    font-size: 8px;
+    justify-content: space-evenly;
+}
+canvas{
+    height: 600px;
+    width: 600px;
+    background-color: greenyellow;
+}
+.grid{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+}
+.tropadiv{
+    background-color: aqua;
+    display: flex;
+    flex-direction: row;
+}
