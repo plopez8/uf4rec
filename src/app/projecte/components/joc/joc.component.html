@@ -1,12 +1,14 @@
 <div class="general">
     <div>
-        <canvas #canvasElement (dragover)="onDragOverCanvas($event)" (drop)="onDropCanvas($event)"></canvas>
-        <div>
+        <canvas #canvasElement width="500" height="500" (click)="onCanvasClick($event)" (mousemove)="onMouseMove($event)" (dragover)="onDragOverCanvas($event)" (drop)="onDropCanvas($event)"></canvas>
+    </div>    
+    <div>
         <p>1</p>
-        <p>2</p>
-        <p>3</p>
-        <p>4</p>
-        <p>5</p>
+        <p>{{ estadisticasTropa.salud }}</p>
+        <p>{{ estadisticasTropa.defensa }}</p>
+        <p>{{ estadisticasTropa.ataque }}</p>
+        <p>{{ estadisticasTropa.fiabilidad }}</p>
+        
         <div class="grid">
             <div *ngFor="let tropa of tropas">
                 <div class="tropadiv" draggable="true" (dragstart)="onDragStart($event, tropa)">

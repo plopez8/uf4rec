@@ -5,12 +5,16 @@ export class Tropa implements ITropa{
     defensa: number;
     atac: number;
     fiabilitat: number;
+    x: number;
+    y: number;
 
     constructor() {
         this.salut = 100;
         this.defensa = 0;
         this.atac = 0;
         this.fiabilitat = 0;
+        this.x = 0;
+        this.y = 0;
         this.generarEstadisticasAleatorias();
       }
     

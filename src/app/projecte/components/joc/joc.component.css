@@ -6,8 +6,6 @@
     justify-content: space-evenly;
 }
 canvas{
-    height: 600px;
-    width: 600px;
     background-color: greenyellow;
 }
 .grid{

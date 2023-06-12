@@ -3,4 +3,6 @@ export interface ITropa{
     defensa: number;
     atac: number;
     fiabilitat: number;
+    x: number;
+    y: number;
 }
