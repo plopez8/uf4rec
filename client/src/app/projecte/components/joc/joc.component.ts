@@ -21,6 +21,7 @@ export class JocComponent implements OnInit {
     fiabilidad: 0
   };
 
+  // constructor() {}
   constructor(private socketService: SocketService) {}
 
 
@@ -122,7 +123,8 @@ export class JocComponent implements OnInit {
         };
 
         // Envía el movimiento de tropa al servidor Socket.IO
-        this.socketService.emit('moverTropa', { tropa: this.selectedTropa, x: newX, y: newY });      }
+        this.socketService.emit('moverTropa', { tropa: this.selectedTropa, x: newX, y: newY }); 
+      }
     }
   }
 
