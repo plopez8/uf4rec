@@ -1,0 +1,39 @@
+<div class="general">
+    <div>
+        <canvas #canvasElement width="500" height="500" (click)="onCanvasClick($event)" (mousemove)="onMouseMove($event)" (dragover)="onDragOverCanvas($event)" (drop)="onDropCanvas($event)"></canvas>
+    </div>    
+    <div>
+        <p>1</p>
+        <p>{{ estadisticasTropa.salud }}</p>
+        <p>{{ estadisticasTropa.defensa }}</p>
+        <p>{{ estadisticasTropa.ataque }}</p>
+        <p>{{ estadisticasTropa.fiabilidad }}</p>
+        
+        <div class="grid">
+            <div *ngFor="let tropa of tropas">
+                <div class="tropadiv" draggable="true" (dragstart)="onDragStart($event, tropa)" *ngIf="!tropa.utilizada">
+                    <div class="imagediv">
+                      <img src="../../../../assets/Imatges/aSoldier.png">
+                  </div>
+                  <div>
+                      <p>Salut: {{ tropa.salut }}</p>
+                      <p>Defensa: {{ tropa.defensa }}</p>
+                      <p>Atac: {{ tropa.atac }}</p>
+                      <p>Fiabilitat: {{ tropa.fiabilitat }}</p>
+                  </div>
+              </div>
+            </div>
+          </div>
+          
+        <div>
+            <button (click)="moverTropa('arriba')">Arriba</button>
+            <button (click)="moverTropa('abajo')">Abajo</button>
+<button (click)="moverTropa('izquierda')">Izquierda</button>
+<button (click)="moverTropa('derecha')">Derecha</button>
+
+        </div>
+        <div>
+            <button>1</button>
+        </div>
+    </div>
+</div>
