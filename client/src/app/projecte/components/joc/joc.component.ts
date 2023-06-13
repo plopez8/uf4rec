@@ -20,27 +20,44 @@ export class JocComponent implements OnInit {
     ataque: 0,
     fiabilidad: 0
   };
-
+  miTurno: boolean = false;
+  jugadorActual: string = '';
   // constructor() {}
   constructor(private socketService: SocketService) {}
 
 
   ngOnInit() {
-    // Suscribe el cliente a los eventos del servidor Socket.IO
-    this.socketService.subscribe('turno', (data) => {
+
+    this.socketService.ubicarTropa((data) => {
+      this.ubicarTropa(data.tropa, data.x, data.y);
+    });
+    this.socketService.subscribe('iniciarPartida', (data: { jugador: string, miTurno: boolean }) => {
+      this.jugadorActual = data.jugador;
+      this.miTurno = data.miTurno;
+      // Resto de acciones necesarias para el inicio de la partida
+    });
+    
+    this.socketService.subscribe('turno', (data: { jugadorActual: string, miTurno: boolean }) => {
+      this.jugadorActual = data.jugadorActual;
+      this.miTurno = data.miTurno;
       // Resto de acciones necesarias para establecer el turno inicial
     });
-
-    this.socketService.subscribe('tropaMovida', (data) => {
+    
+  
+    this.socketService.synchronizeTropaMovida((data) => {
       // Resto de acciones necesarias para actualizar el movimiento de tropa
     });
-
-    this.socketService.subscribe('turno', (data) => {
+  
+    this.socketService.cambioTurno((data: { jugadorActual: string, miTurno: boolean }) => {
+      this.jugadorActual = data.jugadorActual;
+      this.miTurno = data.miTurno;
       // Resto de acciones necesarias para actualizar el cambio de turno
     });
-
+  
     this.crearTropas();
   }
+  
+
 
   seleccionarTropa(tropa: Tropa): void {
     this.selectedTropa = tropa;
@@ -53,6 +70,7 @@ export class JocComponent implements OnInit {
 
 
   onCanvasClick(event: MouseEvent): void {
+    if (this.miTurno) {
     const canvasRect = this.canvasElement.nativeElement.getBoundingClientRect();
     const x = event.clientX - canvasRect.left;
     const y = event.clientY - canvasRect.top;
@@ -65,8 +83,11 @@ export class JocComponent implements OnInit {
       }
     }
   }
+  }
 
   moverTropa(direccion: string): void {
+    if (this.miTurno) {
+    console.log(this.miTurno);
     if (this.selectedTropa) {
       const canvas = this.canvasElement.nativeElement;
       const ctx = canvas.getContext('2d');
@@ -123,9 +144,10 @@ export class JocComponent implements OnInit {
         };
 
         // Envía el movimiento de tropa al servidor Socket.IO
-        this.socketService.emit('moverTropa', { tropa: this.selectedTropa, x: newX, y: newY }); 
+        this.socketService.enviarTropaMovida({ tropa: this.selectedTropa, x: newX, y: newY });
       }
     }
+  }
   }
 
   onMouseMove(event: MouseEvent): void {
@@ -180,6 +202,11 @@ export class JocComponent implements OnInit {
   
       // Marcar la tropa como utilizada
       tropa.utilizada = true;
+      console.log("ubicar-funcioncomp");
+      if (this.miTurno) {
+        this.socketService.cambioTurno({ jugadorActual: this.jugadorActual, miTurno: false });
+      }
+      // this.socketService.emit('ubicarTropa', { tropa, x, y });
     }
   }
 
@@ -191,7 +218,9 @@ export class JocComponent implements OnInit {
     event.preventDefault();
   }
 
+
   onDropCanvas(event: DragEvent): void {
+    if (this.miTurno) {
     event.preventDefault();
     const tropaData = event.dataTransfer?.getData('text/plain');
     if (tropaData) {
@@ -199,11 +228,16 @@ export class JocComponent implements OnInit {
       const canvasRect = this.canvasElement.nativeElement.getBoundingClientRect();
       const x = event.clientX - canvasRect.left;
       const y = event.clientY - canvasRect.top;
+
+      // Ubicar la tropa localmente en el cliente
       this.ubicarTropa(tropa, x, y);
-      
-      // Marcar la tropa como eliminada
-      tropa.utilizada = true;
-      console.log(tropa);
+
+      // Envía información de ubicación de la tropa al servidor Socket.IO
+      this.socketService.enviarUbicacionTropa({ tropa, x, y });
+      if (this.miTurno) {
+        this.socketService.cambioTurno({ jugadorActual: this.jugadorActual, miTurno: false });
+      }
     }
   }
+}
 }
